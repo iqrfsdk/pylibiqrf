@@ -24,7 +24,7 @@ import asyncio
 import time
 
 from collections import deque
-from pylibiqrf.dpa import DpaMessage
+from iqrf.dpa import DpaMessage
 
 class AsyncUdpHandler:
 
