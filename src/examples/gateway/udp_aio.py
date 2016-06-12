@@ -19,7 +19,6 @@ Example usages:
 
 """
 
-import array
 import argparse
 import asyncio
 import time
