@@ -10,7 +10,9 @@ sending very basic commands to a remote IQRF gateway.
 
 The module is compatible with Python 3.5+.
 
-Example usage: udp_aio.py --host 10.1.30.62 --port 55000
+Example usages:
+    - udp_aio.py --help
+    - udp_aio.py --host 10.1.30.62 --port 55000
 
 :copyright: (c) 2016 by Tomáš Rottenberg.
 :license: MIT, see license.txt for more details.
