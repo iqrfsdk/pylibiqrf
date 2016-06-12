@@ -96,17 +96,22 @@ def main():
     enable_led = DpaMessage([34, 3, 0, 0, 0, 0, 0, 0, 6, 0, 0, 6, 1, 255, 255, 241, 237])
     disable_led = DpaMessage([34, 3, 0, 0, 0, 0, 0, 0, 6, 0, 0, 6, 0, 255, 255, 198, 221])
 
-    print("Sending: ", enable_led)
-    response_future = client.send_message(enable_led.encode())
-    loop.run_until_complete(response_future)
-    print("Received: ", DpaMessage.decode(response_future.result()))
+    try:
+        response_future = client.send_message(enable_led.encode())
+        loop.run_until_complete(asyncio.wait_for(response_future, 3))
+        response = response_future.result()
+        print("Sent: ", enable_led)
+        print("Received: ", DpaMessage.decode(response))
 
-    time.sleep(1)
+        time.sleep(1)
 
-    print("Sending: ", disable_led)
-    response_future = client.send_message(disable_led.encode())
-    loop.run_until_complete(response_future)
-    print("Received: ", DpaMessage.decode(response_future.result()))
+        response_future = client.send_message(disable_led.encode())
+        loop.run_until_complete(asyncio.wait_for(response_future, 3))
+        response = response_future.result()
+        print("Sent: ", disable_led)
+        print("Received: ", DpaMessage.decode(response))
+    except asyncio.TimeoutError:
+        print("Operation timed out. Please check your internet connection and retry.")
 
     client.stop()
 
