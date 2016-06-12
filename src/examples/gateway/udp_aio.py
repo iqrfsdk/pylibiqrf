@@ -39,7 +39,7 @@ class DpaMessage:
 
     @staticmethod
     def decode(data):
-        return Message(list(data))
+        return DpaMessage(list(data))
 
 class AsyncResponseBasedUdpHandler:
 
@@ -99,14 +99,14 @@ def main():
     print("Sending: ", enable_led)
     response_future = client.send_message(enable_led.encode())
     loop.run_until_complete(response_future)
-    print("Received: ", Message.decode(response_future.result()))
+    print("Received: ", DpaMessage.decode(response_future.result()))
 
     time.sleep(1)
 
     print("Sending: ", disable_led)
     response_future = client.send_message(disable_led.encode())
     loop.run_until_complete(response_future)
-    print("Received: ", Message.decode(response_future.result()))
+    print("Received: ", DpaMessage.decode(response_future.result()))
 
     client.stop()
 
