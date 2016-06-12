@@ -41,7 +41,7 @@ class DpaMessage:
     def decode(data):
         return DpaMessage(list(data))
 
-class AsyncResponseBasedUdpHandler:
+class AsyncUdpHandler:
 
     def __init__(self, parent):
         self.parent = parent
@@ -59,13 +59,13 @@ class AsyncResponseBasedUdpHandler:
     def connection_lost(self, exception):
         self.parent.loop.stop()
 
-class ResponseBasedUdpClient:
+class AsyncUdpClient:
 
     def __init__(self, loop, address):
         self.address = address
         self.loop = loop
         self.response_futures = deque()
-        self.handler_factory = lambda: AsyncResponseBasedUdpHandler(self)
+        self.handler_factory = lambda: AsyncUdpHandler(self)
 
     def start(self):
         self.task = asyncio.Task(self.loop.create_datagram_endpoint(self.handler_factory, remote_addr=self.address))
@@ -90,7 +90,7 @@ def main():
 
     loop = asyncio.get_event_loop()
 
-    client = ResponseBasedUdpClient(loop, (args.host, args.port))
+    client = AsyncUdpClient(loop, (args.host, args.port))
     client.start()
 
     enable_led = DpaMessage([34, 3, 0, 0, 0, 0, 0, 0, 6, 0, 0, 6, 1, 255, 255, 241, 237])
