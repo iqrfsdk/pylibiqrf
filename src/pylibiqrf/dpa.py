@@ -6,7 +6,7 @@ class DpaMessage:
         self.data = data
 
     def __str__(self):
-        return "DpaMessage([{}])".format(self.data)
+        return "DpaMessage({})".format(self.data)
 
     def encode(self):
         return bytes(self.data)

@@ -39,7 +39,7 @@ class AsyncUdpHandler:
         future.set_result(data)
 
     def error_received(self, exception):
-        print("Error: ", exception)
+        print("Error:", exception)
 
     def connection_lost(self, exception):
         self.parent.loop.stop()
@@ -85,16 +85,16 @@ def main():
         response_future = client.send_message(enable_led.encode())
         loop.run_until_complete(asyncio.wait_for(response_future, 3))
         response = response_future.result()
-        print("Sent: ", enable_led)
-        print("Received: ", DpaMessage.decode(response))
+        print("Sent:", enable_led)
+        print("Received:", DpaMessage.decode(response))
 
         time.sleep(1)
 
         response_future = client.send_message(disable_led.encode())
         loop.run_until_complete(asyncio.wait_for(response_future, 3))
         response = response_future.result()
-        print("Sent: ", disable_led)
-        print("Received: ", DpaMessage.decode(response))
+        print("Sent:", disable_led)
+        print("Received:", DpaMessage.decode(response))
     except asyncio.TimeoutError:
         print("Operation timed out. Please check your internet connection and retry.")
 
