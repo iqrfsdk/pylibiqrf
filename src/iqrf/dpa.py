@@ -11,6 +11,6 @@ class DpaMessage:
     def encode(self):
         return bytes(self.data)
 
-    @staticmethod
-    def decode(data):
-        return DpaMessage(list(data))
+    @classmethod
+    def decode(cls, data):
+        return cls(list(data))
