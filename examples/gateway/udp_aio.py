@@ -78,7 +78,7 @@ class AsyncUdpClient:
         self.transport.close()
         self.loop.close()
 
-    def send(self, data, responses = 0):
+    def send(self, data, responses=0):
         if responses > 0:
             future = asyncio.Future()
             self.response_futures.append((future, responses))
@@ -104,7 +104,7 @@ def main():
     disable_led = DpaMessage([34, 3, 0, 0, 0, 0, 0, 0, 6, 0, 0, 6, 0, 255, 255, 198, 221])
 
     try:
-        response_future = client.send(enable_led.encode(), responses = 1)
+        response_future = client.send(enable_led.encode(), responses=1)
         loop.run_until_complete(asyncio.wait_for(response_future, 3))
         response = response_future.result()[0]
         print("Sent:", enable_led)
@@ -112,7 +112,7 @@ def main():
 
         time.sleep(1)
 
-        response_future = client.send(disable_led.encode(), responses = 1)
+        response_future = client.send(disable_led.encode(), responses=1)
         loop.run_until_complete(asyncio.wait_for(response_future, 3))
         response = response_future.result()[0]
         print("Sent:", disable_led)
