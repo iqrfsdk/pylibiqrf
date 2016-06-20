@@ -15,7 +15,7 @@ Example usages:
     - udp_aio.py --host 10.1.30.62 --port 55000
 
 :copyright: (c) 2016 by Tomáš Rottenberg.
-:license: MIT, see license.txt for more details.
+:license: Apache 2, see license.txt for more details.
 
 """
 
