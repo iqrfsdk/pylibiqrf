@@ -30,13 +30,31 @@ class AsyncUdpHandler:
 
     def __init__(self, parent):
         self.parent = parent
+        self.processing = None
+        self.response_buffer = []
 
     def connection_made(self, transport):
         pass
 
     def datagram_received(self, data, address):
-        future = self.parent.response_futures.popleft()
-        future.set_result(data)
+        if not self.processing:
+            if len(self.parent.response_futures) < 1:
+                return
+
+            self.processing = self.parent.response_futures.popleft()
+
+        self.response_buffer.append(data)
+
+        future, responses = self.processing
+        responses -= 1
+
+        if responses > 0:
+            self.processing = (future, responses)
+        else:
+            future.set_result(self.response_buffer[:])
+
+            self.response_buffer = []
+            self.processing = None
 
     def error_received(self, exception):
         print("Error:", exception)
@@ -60,11 +78,15 @@ class AsyncUdpClient:
         self.transport.close()
         self.loop.close()
 
-    def send_message(self, data):
-        future = asyncio.Future()
-        self.transport.sendto(data)
-        self.response_futures.append(future)
-        return future
+    def send(self, data, responses = 0):
+        if responses > 0:
+            future = asyncio.Future()
+            self.response_futures.append((future, responses))
+            self.transport.sendto(data)
+            return future
+        else:
+            print("called")
+            self.transport.sendto(data)
 
 ARGS = argparse.ArgumentParser(description="IQRF gateway UDP AIO example.")
 ARGS.add_argument("--host", action="store", dest="host", required=True, help="The name or address of the remote host.")
@@ -82,17 +104,17 @@ def main():
     disable_led = DpaMessage([34, 3, 0, 0, 0, 0, 0, 0, 6, 0, 0, 6, 0, 255, 255, 198, 221])
 
     try:
-        response_future = client.send_message(enable_led.encode())
+        response_future = client.send(enable_led.encode(), responses = 1)
         loop.run_until_complete(asyncio.wait_for(response_future, 3))
-        response = response_future.result()
+        response = response_future.result()[0]
         print("Sent:", enable_led)
         print("Received:", DpaMessage.decode(response))
 
         time.sleep(1)
 
-        response_future = client.send_message(disable_led.encode())
+        response_future = client.send(disable_led.encode(), responses = 1)
         loop.run_until_complete(asyncio.wait_for(response_future, 3))
-        response = response_future.result()
+        response = response_future.result()[0]
         print("Sent:", disable_led)
         print("Received:", DpaMessage.decode(response))
     except asyncio.TimeoutError:
