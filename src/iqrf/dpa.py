@@ -2,8 +2,8 @@
 
 """
 
-Package containing core DPA functionality.
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This module contains core DPA functionality.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :copyright: (c) 2016 by Tomáš Rottenberg.
 :license: Apache 2, see license.txt for more details.
