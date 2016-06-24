@@ -8,17 +8,17 @@ __all__ = [
 class ChannelHandler:
 
     def raised(self, channel, exception):
-        pass
+        raise NotImplementedError()
 
 class InboundHandler:
 
     def received(self, channel, data, next):
-        pass
+        raise NotImplementedError()
 
 class OutboundHandler:
 
     def sent(self, channel, message, next):
-        pass
+        raise NotImplementedError()
 
 class Pipeline:
 
