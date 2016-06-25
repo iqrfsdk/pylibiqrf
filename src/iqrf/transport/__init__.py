@@ -3,7 +3,7 @@ import asyncio
 from .utility import Next
 
 __all__ = [
-    "ChannelHandler", "InboundHandler", "OutboundHandler",
+    "ErrorHandler", "InboundHandler", "OutboundHandler",
     "Pipeline", "Channel"
 ]
 
@@ -47,6 +47,6 @@ class Channel:
 
     def connect(self):
         pass
-        
+
     def send(self, message):
         self.pipeline.handle_send_event(message)
