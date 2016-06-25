@@ -41,12 +41,19 @@ class Pipeline:
 
 class Channel:
 
-    def __init__(self, transport, error_handler, inbound_handlers, outbound_handlers):
-        self.transport = transport
+    def __init__(self, url, error_handler, inbound_handlers, outbound_handlers, options={}):
+        self.url = url
         self.pipeline = Pipeline(self, error_handler, inbound_handlers, outbound_handlers)
+        self.options = options
 
-    def connect(self):
+    async def connect(self):
         pass
 
-    def send(self, message):
-        self.pipeline.handle_send_event(message)
+    async def send(self, message):
+        pass
+
+    async def disconnect(self):
+        pass
+
+async def connect(url, error_handler, inbound_handlers, outbound_handlers, options={}):
+    pass
