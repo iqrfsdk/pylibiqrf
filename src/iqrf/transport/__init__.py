@@ -3,13 +3,19 @@ import asyncio
 from .utility import Next
 
 __all__ = [
-    "ErrorHandler", "InboundHandler", "OutboundHandler",
+    "ChannelHandler", "InboundHandler", "OutboundHandler",
     "Pipeline", "Channel"
 ]
 
-class ErrorHandler:
+class ChannelHandler:
+
+    def connected(self, channel):
+        raise NotImplementedError()
 
     def raised(self, channel, exception):
+        raise NotImplementedError()
+
+    def disconnected(self, channel):
         raise NotImplementedError()
 
 class InboundHandler:
@@ -24,14 +30,20 @@ class OutboundHandler:
 
 class Pipeline:
 
-    def __init__(self, channel, error_handler, inbound_handlers, outbound_handlers):
+    def __init__(self, channel, channel_handler, inbound_handlers, outbound_handlers):
         self.channel = channel
-        self.error_handler = error_handler
+        self.channel_handler = channel_handler
         self.inbound_handlers = inbound_handlers
         self.outbound_handlers = outbound_handlers
 
+    def handle_connect_event(self, channel):
+        self.channel_handler.connected(self.channel)
+
     def handle_raise_event(self, exception):
-        self.error_handler.raised(channel, exception)
+        self.channel_handler.raised(self.channel, exception)
+
+    def handle_disconnect_event(self, channel):
+        self.channel_handler.disconnected(self.channel)
 
     def handle_receive_event(self, data):
         Next(self.inbound_handlers).next(self.channel, data)
@@ -41,19 +53,14 @@ class Pipeline:
 
 class Channel:
 
-    def __init__(self, url, error_handler, inbound_handlers, outbound_handlers, options={}):
-        self.url = url
-        self.pipeline = Pipeline(self, error_handler, inbound_handlers, outbound_handlers)
-        self.options = options
+    def __init__(self, channel_handler, inbound_handlers, outbound_handlers):
+        self.pipeline = Pipeline(self, channel_handler, inbound_handlers, outbound_handlers)
 
-    async def connect(self):
+    def send(self, message):
         pass
 
-    async def send(self, message):
+    def disconnect(self):
         pass
 
-    async def disconnect(self):
-        pass
-
-async def connect(url, error_handler, inbound_handlers, outbound_handlers, options={}):
+async def connect(loop, url, channel_handler, inbound_handlers, outbound_handlers, options={}):
     pass
