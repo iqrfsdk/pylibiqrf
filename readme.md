@@ -1,5 +1,7 @@
 # pylibiqrf
 
+[![Build Status](https://travis-ci.org/iqrfsdk/pylibiqrf.svg?branch=master)](https://travis-ci.org/iqrfsdk/pylibiqrf)
+
 Python application programming interface for interacting with IQRF ecosystem.
 
 ## Installation
