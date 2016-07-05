@@ -14,7 +14,7 @@ class CdcIO:
 
     def read(self, size=-1):
         if size is None or size < 0:
-            size = self._max_read_size
+            size = max(self._max_read_size, self.remaining())
 
         return self._serial.read(size)
 
