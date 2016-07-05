@@ -71,7 +71,7 @@ def _supports_parameter(message):
 def _supports_value(message):
     return message.value[4]
 
-def _get_message_type_by_parameters(direction, token, parameter, value):
+def _get_message_by_parameters(direction, token, parameter, value):
     for message in CdcMessage:
         if direction == _get_direction(message) and \
         token == _get_token(message) and \
@@ -133,7 +133,7 @@ def decode_cdc_message(data):
         value = keyed_data[1]
 
     else:
-        raise CdcMessageDecodeError("Invalid values!")
+        raise CdcMessageDecodeError("Only messages with one value are supported!")
 
     logger.debug(
         "Decoder matched {} to [direction={}, token={}, parameter={}, value={}]".format(
@@ -141,15 +141,15 @@ def decode_cdc_message(data):
         )
     )
 
-    message_type = _get_message_type_by_parameters(
+    message = _get_message_by_parameters(
         direction, token, parameter != None, value != None
     )
 
-    if message_type is None:
+    if message is None:
         raise CdcMessageDecodeError(
             "No message matching ({}, {}, {}, {})".format(
                 direction, token, parameter != None, value != None
             )
         )
 
-    return (message_type, parameter, value)
+    return (message, parameter, value)
