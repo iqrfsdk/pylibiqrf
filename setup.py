@@ -28,6 +28,5 @@ setup(
     ],
     install_requires=[
         "pyserial >= 3.1.1"
-    ],
-    platforms='any',
+    ]
 )
