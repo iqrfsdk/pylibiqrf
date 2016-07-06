@@ -283,7 +283,7 @@ class CdcIO:
             boundary = self._buffer.find(CdcMessageToken.TERMINATOR)
             if boundary != -1:
                 boundary += 1
-                data = self._buffer[:boundary]
+                data = bytes(self._buffer[:boundary])
                 self._buffer = self._buffer[boundary:]
 
                 return decode_cdc_message(data)
