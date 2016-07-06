@@ -1,13 +1,15 @@
-import unittest
+import logging
 import sys
+import unittest
 
 TEST_DIRECTORIES = [
-    "test/cdc"
+    "tests"
 ]
 
 def main():
 
     exit_code = 0
+    logging.basicConfig(level=logging.DEBUG)
 
     for directory in TEST_DIRECTORIES:
         tests = unittest.TestLoader().discover(directory, pattern="*_test.py")
