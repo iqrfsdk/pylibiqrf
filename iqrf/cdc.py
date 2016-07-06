@@ -153,37 +153,23 @@ def decode_cdc_message(data, check_terminator=True):
     else:
         raise CdcMessageDecodeError("Invalid direction!")
 
-    # Split the data using the value separator, which is usually 'b":"'.
-    # If the value is present, this returns an array of length 2.
-    # Otherwise an array with exactly one entry will be returned.
-    keyed_data = data.split(CdcMessageToken.SEPARATOR)
+    index = data.find(CdcMessageToken.SEPARATOR)
 
-    if len(keyed_data) == 1:
-        # No value present.
-        token = keyed_data[0]
+    if index == -1:
+        token = data
         parameter = None
         value = None
 
-    elif len(keyed_data) == 2:
-        # Value is present.
+    else:
+        token, value = data[:index], data[index + 1:]
 
-        # If the match succeeds that means the message contains a parameter.
-        match = CdcMessageToken.PARAMETER_PATTERN.match(keyed_data[0])
+        match = CdcMessageToken.PARAMETER_PATTERN.match(token)
 
         if match is not None:
-            # Parse the parameter.
             token = match.group(1)
             parameter = match.group(2)
-
         else:
-            # No parameter present.
-            token = keyed_data[0]
             parameter = None
-
-        value = keyed_data[1]
-
-    else:
-        raise CdcMessageDecodeError("Only one value messages are supported!")
 
     logger.debug("Decoded as: %r, %s, %r, %r.", direction, token, parameter, value)
 

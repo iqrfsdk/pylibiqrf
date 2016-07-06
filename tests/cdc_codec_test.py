@@ -18,7 +18,8 @@ VALUE_MESSAGES = {
     b"<B:OK\r": (CdcMessage.INDICATION_RESPONSE, None, b"OK"),
     b"<DS:OK\r": (CdcMessage.SEND_DATA_RESPONSE, None, b"OK"),
     b"<DS:ERR\r": (CdcMessage.SEND_DATA_RESPONSE, None, b"ERR"),
-    b"<DS:BUSY\r": (CdcMessage.SEND_DATA_RESPONSE, None, b"BUSY")
+    b"<DS:BUSY\r": (CdcMessage.SEND_DATA_RESPONSE, None, b"BUSY"),
+    b'<IT:\x81\x00\x02:8$y\x08\r': (CdcMessage.TR_INFO_RESPONSE, None, b"\x81\x00\x02:8$y\x08")
 }
 
 PARAMETER_MESSAGES = {
