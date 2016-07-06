@@ -3,6 +3,8 @@
 import enum
 import re
 import serial
+import sys
+import time
 
 from .log import logger
 
@@ -28,7 +30,9 @@ class CdcMessageDecodeError(CdcMessageCodecError):
     pass
 
 class CdcReadTimeoutError(Exception):
-    """An exception raised when read from CDC compatible device times out."""
+    """An exception raised when reading from CDC compatible device times out."""
+    
+    pass
 
 class CdcMessageDirection(enum.Enum):
     """An enumeration of all possible directions that CDC message may have."""
@@ -227,10 +231,8 @@ class CdcIO:
 
     """
 
-    def __init__(self, device, timeout=1):
-        self._timeout = timeout
-        self._serial = serial.Serial(device, 9600, timeout=self._timeout)
-        self._max_read_size = 1024
+    def __init__(self, device):
+        self._serial = serial.Serial(device, 9600, timeout=None)
         self._buffer = bytearray()
 
     def __enter__(self):
@@ -242,20 +244,24 @@ class CdcIO:
     def remaining(self):
         return self._serial.in_waiting
 
-    def read(self, size=-1):
-        if size is None or size < 0:
-            size = max(self._max_read_size, self.remaining())
-        elif size == 0:
-            return b""
+    def _wait_until_readable(self, timeout):
+        if timeout is not None and timeout == 0:
+            return self.remaining()
 
-        read = self._serial.read(size)
+        limit = time.time() + timeout if timeout is not None else sys.maxsize
 
-        if len(read) == 0 and self._timeout > 0:
-            raise CdcReadTimeoutError()
+        while time.time() < limit:
+            available = self.remaining()
+            if available > 0:
+                return available
 
-        return read
+        raise CdcReadTimeoutError()
 
-    def read_cdc_message(self):
+    def read(self, size, timeout=None):
+        available = self._wait_until_readable(timeout)
+        return self._serial.read(min(size, available))
+
+    def read_cdc_message(self, timeout=None):
         """Reads as much bytes as possible, buffering the result and attempts \
         to decode a CDC message from the buffer.
 
@@ -266,6 +272,8 @@ class CdcIO:
         """
 
         while True:
+            self._buffer.extend(self.read(1024, timeout=timeout))
+
             boundary = self._buffer.find(CdcMessageToken.TERMINATOR)
             if boundary != -1:
                 boundary += 1
@@ -274,7 +282,8 @@ class CdcIO:
 
                 return decode_cdc_message(data)
 
-            self._buffer.extend(self.read())
+            if timeout is not None and timeout == 0:
+                return (None, None, None)
 
     def write(self, data):
         return self._serial.write(data)
@@ -287,11 +296,11 @@ class CdcIO:
     def close(self):
         self._serial.close()
 
-def open(device, timeout=1):
+def open(device):
     """An opener method for performing IO operations with IQRF USB CDC device.
 
     This method supports context management.
 
     """
 
-    return CdcIO(device, timeout=timeout)
+    return CdcIO(device)
