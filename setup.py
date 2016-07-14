@@ -10,7 +10,7 @@ setup(
     author="Tomáš Rottenberg",
     author_email="frzerostbite@gmail.com",
     url="https://github.com/iqrfsdk/pylibiqrf",
-    packages=["iqrf"],
+    packages=["iqrf", "iqrf.cdc"],
     license="Apache 2",
     long_description=long_description,
     classifiers=[
