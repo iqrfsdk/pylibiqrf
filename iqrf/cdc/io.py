@@ -124,14 +124,14 @@ class BufferedCdcIO(RawCdcIO):
         self.write(message.encode())
 
     def send(self, message, timeout=None):
-        if timeout <= 0:
+        if timeout is not None and timeout <= 0:
             raise NotImplementedError("Non-blocking calls are currently not supported!")
 
         self._write_cdc_request(message)
         return self._read_cdc_response(timeout=timeout)
 
     def receive(self, timeout=None):
-        if timeout <= 0:
+        if timeout is not None and timeout <= 0:
             raise NotImplementedError("Non-blocking calls are currently not supported!")
 
         if len(self._async_message_queue) > 0:
