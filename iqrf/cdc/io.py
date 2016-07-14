@@ -39,6 +39,7 @@ class RawCdcIO:
             available = self._remaining()
             if available > 0:
                 return available
+            time.sleep(0.05)
 
         raise CdcReadTimeoutError()
 
