@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 with open("readme.md") as stream:
     long_description = stream.read()
@@ -10,6 +10,7 @@ setup(
     author="Tomáš Rottenberg",
     author_email="frzerostbite@gmail.com",
     url="https://github.com/iqrfsdk/pylibiqrf",
+    package_dir={"": "src"},
     packages=["iqrf", "iqrf.cdc"],
     license="Apache 2",
     long_description=long_description,
