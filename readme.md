@@ -11,15 +11,39 @@
     </a>
 </p>
 
-Python application programming interface for interacting with IQRF ecosystem.
+Python application programming interface for interacting with the IQRF
+ecosystem.
 
 ## Installation
 
 To install pylibiqrf, type:
 
 ```
-python setup.py install
+$ python setup.py install
 ```
 
 This will install the latest version of pylibiqrf alongside with its dependencies.
 Please note that pylibiqrf requires Python version 3.5 or later.
+
+## Documentation
+
+pylibiqrf uses Sphinx to generate its documentation. If you wish to generate and
+view it, install Sphinx and Sphinx RTD theme. You can do this by typing:
+
+```
+$ pip install sphinx
+$ pip install sphinx_rtd_theme
+```
+
+After that you can generate the documentation using our documentation utility
+by running:
+
+```
+$ python doc.py generate
+```
+
+And finally to view the documentation:
+
+```
+$ python doc.py view
+```
