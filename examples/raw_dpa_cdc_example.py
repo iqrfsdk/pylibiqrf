@@ -3,7 +3,7 @@ import argparse
 from iqrf import cdc
 from time import sleep
 
-ARGS = argparse.ArgumentParser(description="Raw IQRF DPA communication over USB CDC example.")
+ARGS = argparse.ArgumentParser(description="Raw IQRF DPA CDC communication example.")
 ARGS.add_argument("-p", "--port", action="store", dest="port", required=True, type=str, help="The port name to connect to.")
 
 def main():
