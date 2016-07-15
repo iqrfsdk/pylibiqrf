@@ -59,7 +59,6 @@ class BufferedCdcIO(RawCdcIO):
         super().__init__(device)
 
         self._buffer = bytearray()
-        self._async_buffer = bytearray()
         self._async_response_queue = collections.deque()
 
     def _read_cdc_response(self, timeout=None):
@@ -78,7 +77,7 @@ class BufferedCdcIO(RawCdcIO):
                         raise IOError
 
                     if message.is_async():
-                        self._async_message_queue.append(message)
+                        self._async_response_queue.append(message)
                     else:
                         return message
 
@@ -93,12 +92,12 @@ class BufferedCdcIO(RawCdcIO):
     def _read_async_cdc_response(self, timeout=None):
         stop = False
         while True:
-            if len(self._async_buffer) > 0:
-                boundary = self._async_buffer.find(iqrf_codec.CdcToken.TERMINATOR)
+            if len(self._buffer) > 0:
+                boundary = self._buffer.find(iqrf_codec.CdcToken.TERMINATOR)
                 if boundary != -1:
                     boundary += 1
-                    data = bytes(self._async_buffer[:boundary])
-                    self._async_buffer = self._async_buffer[boundary:]
+                    data = bytes(self._buffer[:boundary])
+                    self._buffer = self._buffer[boundary:]
 
                     message = iqrf_codec.decode_cdc_message(data)
 
@@ -113,7 +112,7 @@ class BufferedCdcIO(RawCdcIO):
             if stop:
                 return None
 
-            self._async_buffer.extend(self.read(1024, timeout=timeout))
+            self._buffer.extend(self.read(1024, timeout=timeout))
 
             if timeout is not None and timeout == 0:
                 stop = True
@@ -135,8 +134,8 @@ class BufferedCdcIO(RawCdcIO):
         if timeout is not None and timeout <= 0:
             raise NotImplementedError("Non-blocking calls are currently not supported!")
 
-        if len(self._async_message_queue) > 0:
-            return self._async_message_queue.popleft()
+        if len(self._async_response_queue) > 0:
+            return self._async_response_queue.popleft()
 
         return self._read_async_cdc_response(timeout=timeout)
 
