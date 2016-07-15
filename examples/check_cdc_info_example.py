@@ -26,7 +26,6 @@ def main():
 
     except Exception as error:
         print("An error occured:", type(error), error)
-        raise error
     finally:
         if device is not None:
             device.close()
