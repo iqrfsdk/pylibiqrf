@@ -43,7 +43,7 @@ def main():
             return
 
         if sys.platform == "win32":
-            raise NotImplementedError
+            exit_code = execute("cmd /C cd /D .\\docs && del /F /Q .\\build && make.bat html")
         else:
             exit_code = execute("make -C ./docs clean html")
 
