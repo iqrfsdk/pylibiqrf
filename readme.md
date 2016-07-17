@@ -28,7 +28,8 @@ Please note that pylibiqrf requires Python version 3.5 or later.
 ## Documentation
 
 pylibiqrf uses Sphinx to generate its documentation. If you wish to generate and
-view it, install Sphinx and Sphinx RTD theme. You can do this by typing:
+view it, first install the library itself. After that install Sphinx and Sphinx
+RTD theme. It's as simple as typing:
 
 ```
 $ pip install sphinx

@@ -5,6 +5,11 @@ import sys
 import webbrowser
 
 try:
+    import iqrf
+except ImportError:
+    iqrf = None
+
+try:
     import sphinx
 except ImportError:
     sphinx = None
@@ -32,6 +37,11 @@ def main():
     action = args.action
 
     if action == "generate":
+        if iqrf is None:
+            print("The module must be installed first!")
+            print("Please run 'python setup.py install' to install the module.")
+            return
+
         if sphinx is None:
             print("To generate the documentation, Sphinx is required!")
             print("Please install the 'sphinx' Python package.")
