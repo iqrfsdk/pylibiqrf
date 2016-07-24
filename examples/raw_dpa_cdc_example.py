@@ -1,7 +1,7 @@
 import argparse
+import time
 
-from iqrf import cdc
-from time import sleep
+from iqrf.transport import cdc
 
 ARGS = argparse.ArgumentParser(description="Raw IQRF DPA CDC communication example.")
 ARGS.add_argument("-p", "--port", action="store", dest="port", required=True, type=str, help="The port name to connect to.")
@@ -30,7 +30,7 @@ def main():
 
             print("The first bonded node's green LED was turned on.")
 
-            sleep(3)
+            time.sleep(3)
 
             print("Requesting the first bonded node to turn its green LED off.")
             send = device.send(cdc.DataSendRequest(first_node_ledg_off))

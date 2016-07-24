@@ -1,24 +1,36 @@
+# -*- coding: utf-8 -*-
+
+"""
+IQRF CDC IO
+===========
+
+An implementation of communication channel with IQRF USB CDC devices.
+
+:copyright: (c) 2016 by Tomáš Rottenberg.
+:license:  Apache 2, see license.txt for more details.
+
+"""
+
 import collections
 import serial
 import sys
 import time
 
-from . import codec
-from . import iqrf_codec
+from . import cdc_codec
 
 __all__ = [
-    "CdcReadTimeoutError",
+    "ReadTimeoutError",
     "RawCdcIO", "BufferedCdcIO",
     "open"
 ]
 
-class CdcReadTimeoutError(Exception):
+class ReadTimeoutError(Exception):
     pass
 
 class RawCdcIO:
 
-    def __init__(self, device):
-        self._serial = serial.Serial(device, 9600, timeout=None)
+    def __init__(self, port):
+        self._serial = serial.Serial(port=port, baudrate=9600, timeout=None)
 
     def __enter__(self):
         return self
@@ -41,7 +53,7 @@ class RawCdcIO:
                 return available
             time.sleep(0.05)
 
-        raise CdcReadTimeoutError()
+        raise ReadTimeoutError
 
     def read(self, size, timeout=None):
         available = self._wait_until_readable(timeout)
@@ -55,31 +67,30 @@ class RawCdcIO:
 
 class BufferedCdcIO(RawCdcIO):
 
-    def __init__(self, device):
-        super().__init__(device)
+    def __init__(self, port):
+        super().__init__(port)
 
         self._buffer = bytearray()
-        self._async_response_queue = collections.deque()
+        self._reactions = collections.deque()
 
     def _read_cdc_response(self, timeout=None):
         stop = False
         while True:
             if len(self._buffer) > 0:
-                boundary = self._buffer.find(iqrf_codec.CdcToken.TERMINATOR)
+                boundary = self._buffer.find(cdc_codec.CdcToken.TERMINATOR)
                 if boundary != -1:
                     boundary += 1
                     data = bytes(self._buffer[:boundary])
                     self._buffer = self._buffer[boundary:]
 
-                    message = iqrf_codec.decode_cdc_message(data)
+                    message = cdc_codec.decode_cdc_message(data)
 
-                    if not isinstance(message, codec.CdcResponse):
-                        raise IOError
-
-                    if message.is_async():
-                        self._async_response_queue.append(message)
-                    else:
+                    if isinstance(message, cdc_codec.CdcResponse):
                         return message
+                    elif isinstance(message, cdc_codec.CdcReaction):
+                        self._reactions.append(message)
+                    else:
+                        raise cdc.CdcCodecError
 
             if stop:
                 return None
@@ -89,25 +100,22 @@ class BufferedCdcIO(RawCdcIO):
             if timeout is not None and timeout == 0:
                 stop = True
 
-    def _read_async_cdc_response(self, timeout=None):
+    def _read_cdc_reaction(self, timeout=None):
         stop = False
         while True:
             if len(self._buffer) > 0:
-                boundary = self._buffer.find(iqrf_codec.CdcToken.TERMINATOR)
+                boundary = self._buffer.find(cdc_codec.CdcToken.TERMINATOR)
                 if boundary != -1:
                     boundary += 1
                     data = bytes(self._buffer[:boundary])
                     self._buffer = self._buffer[boundary:]
 
-                    message = iqrf_codec.decode_cdc_message(data)
+                    message = cdc_codec.decode_cdc_message(data)
 
-                    if not isinstance(message, codec.CdcResponse):
-                        raise IOError
+                    if not isinstance(message, cdc_codec.CdcReaction):
+                        raise cdc_codec.CdcCodecError
 
-                    if message.is_async():
-                        return message
-                    else:
-                        raise IOError("Not an async response!")
+                    return message
 
             if stop:
                 return None
@@ -118,8 +126,8 @@ class BufferedCdcIO(RawCdcIO):
                 stop = True
 
     def _write_cdc_request(self, message):
-        if not isinstance(message, codec.CdcRequest):
-            raise IOError("Not a request!")
+        if not isinstance(message, cdc_codec.CdcRequest):
+            raise cdc_codec.CdcCodecError
 
         self.write(message.encode())
 
@@ -134,10 +142,10 @@ class BufferedCdcIO(RawCdcIO):
         if timeout is not None and timeout <= 0:
             raise NotImplementedError("Non-blocking calls are currently not supported!")
 
-        if len(self._async_response_queue) > 0:
-            return self._async_response_queue.popleft()
+        if len(self._reactions) > 0:
+            return self._reactions.popleft()
 
-        return self._read_async_cdc_response(timeout=timeout)
+        return self._read_cdc_reaction(timeout=timeout)
 
-def open(device):
-    return BufferedCdcIO(device)
+def open(port):
+    return BufferedCdcIO(port)

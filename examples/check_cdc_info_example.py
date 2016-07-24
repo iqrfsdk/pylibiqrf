@@ -1,6 +1,6 @@
 import argparse
 
-from iqrf import cdc
+from iqrf.transport import cdc
 
 ARGS = argparse.ArgumentParser(description="IQRF USB CDC communication example.")
 ARGS.add_argument("-p", "--port", action="store", dest="port", required=True, type=str, help="The port name to connect to.")
@@ -15,6 +15,9 @@ def main():
         test = device.send(cdc.TestRequest(), timeout=5)
 
         if test.status == cdc.CdcStatus.OK:
+            print("Indicating the device...")
+            device.send(cdc.IndicationRequest())
+
             print("Requesting device info...")
 
             info = device.send(cdc.InfoRequest())

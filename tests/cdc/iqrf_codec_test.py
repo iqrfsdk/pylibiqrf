@@ -1,6 +1,6 @@
 import unittest
 
-from iqrf import cdc
+from iqrf.transport import cdc
 
 SIMPLE_MESSAGES = {
     b"<ERR\r": cdc.ErrorResponse(),
@@ -25,7 +25,7 @@ VALUE_MESSAGES = {
 
 PARAMETER_MESSAGES = {
     b">DS\x06:Hello.\r": cdc.DataSendRequest(b"Hello."),
-    b"<DR\x03:Hi!\r": cdc.DataReceivedResponse(b"Hi!")
+    b"<DR\x03:Hi!\r": cdc.DataReceivedReaction(b"Hi!")
 }
 
 class EncoderTests(unittest.TestCase):

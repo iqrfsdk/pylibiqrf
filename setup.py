@@ -11,7 +11,11 @@ setup(
     author_email="frzerostbite@gmail.com",
     url="https://github.com/iqrfsdk/pylibiqrf",
     package_dir={"": "src"},
-    packages=["iqrf", "iqrf.cdc"],
+    packages=[
+        "iqrf",
+        "iqrf.util",
+        "iqrf.transport"
+    ],
     license="Apache 2",
     long_description=long_description,
     classifiers=[
