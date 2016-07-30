@@ -5,6 +5,8 @@ python:
 
 install:
     - python setup.py install
+    - pip install pylint
 
 script:
+    - pylint src/iqrf
     - python test.py
