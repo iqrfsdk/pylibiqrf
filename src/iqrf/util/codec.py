@@ -12,8 +12,6 @@ scalable data serializers.
 
 """
 
-import enum
-
 __all__ = [
     "CodecError", "EncodeError", "DecodeError",
     "Encoder", "Decoder",

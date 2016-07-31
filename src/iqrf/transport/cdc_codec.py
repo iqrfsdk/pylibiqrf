@@ -240,7 +240,7 @@ class NoneDecoder(CdcDecoder):
     @classmethod
     def decode(cls, parameter, value):
         if parameter is not None or value is not None:
-            raise codec.CdcMessageDecodeError
+            raise CdcDecodeError("Both parameter and value must be None!")
 
         return cls()
 
@@ -254,7 +254,7 @@ class StatusEncoder(CdcEncoder):
         elif self.status == CdcStatus.ERROR:
             status = CdcToken.ERROR
         else:
-            raise codec.Enco
+            raise CdcEncodeError("Unknown status token!")
 
         return None, status
 

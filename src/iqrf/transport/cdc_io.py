@@ -12,9 +12,10 @@ An implementation of communication channel with IQRF USB CDC devices.
 """
 
 import collections
-import serial
 import sys
 import time
+
+import serial
 
 from . import cdc_codec
 
@@ -90,7 +91,7 @@ class BufferedCdcIO(RawCdcIO):
                     elif isinstance(message, cdc_codec.CdcReaction):
                         self._reactions.append(message)
                     else:
-                        raise cdc.CdcCodecError
+                        raise cdc_codec.CdcCodecError
 
             if stop:
                 return None
