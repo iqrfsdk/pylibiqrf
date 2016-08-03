@@ -1,3 +1,4 @@
+import array
 import ctypes
 import fcntl
 
