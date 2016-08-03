@@ -1,5 +1,5 @@
 import ctypes
-import fnctl
+import fcntl
 
 from periphery import spi
 
