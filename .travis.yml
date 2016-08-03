@@ -1,12 +1,15 @@
 language: python
 
 python:
+    - 3.4
     - 3.5
 
 install:
-    - pip install pylint
+    - pip install pylint codecov
     - python setup.py install
 
 script:
     - python lint.py
-    - python test.py
+    - coverage run test.py
+after_success:
+    - codecov
