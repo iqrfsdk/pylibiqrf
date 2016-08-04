@@ -6,6 +6,9 @@
     <a href="https://travis-ci.org/iqrfsdk/pylibiqrf">
         <img src="https://travis-ci.org/iqrfsdk/pylibiqrf.svg?branch=master">
     </a>
+    <a href="https://codecov.io/gh/iqrfsdk/pylibiqrf">
+        <img src="https://codecov.io/gh/iqrfsdk/pylibiqrf/branch/master/graph/badge.svg">
+    </a>
     <a href="https://github.com/iqrfsdk/pylibiqrf/blob/master/license.txt">
       <img src="https://img.shields.io/:license-apache2-blue.svg">
     </a>
