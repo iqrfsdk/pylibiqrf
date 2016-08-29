@@ -13,7 +13,7 @@ scalable data serializers.
 """
 
 __all__ = [
-    "CodecError", "EncodeError", "DecodeError",
+    "CodecError",
     "Encoder", "Decoder",
     "Message", "Request", "Response", "Reaction"
 ]
@@ -23,26 +23,8 @@ class CodecError(Exception):
 
     pass
 
-class EncodeError(CodecError):
-    """An error thrown when exception raises during encoding."""
-
-    pass
-
-class DecodeError(CodecError):
-    """An error thrown when exception raises during decoding."""
-
-    pass
-
 class Encoder:
     """A mixin that turns regular classes into encodable messages."""
-
-    def tokenize(self):
-        """Turns the object into smaller pieces called tokens which can be
-        serialized to bytes. This method is usually called directly from the
-        :func:`Encoder.encode` method and is meant to guarantee higher
-        modularity."""
-
-        raise NotImplementedError
 
     def encode(self):
         """Encodes the message to bytes."""
