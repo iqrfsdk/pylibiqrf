@@ -15,10 +15,11 @@ matrix:
           env: TOX_ENV=py34
 
 install:
-    - pip install tox
+    - pip install codecov nose tox
     - python setup.py install
 
 script:
     - tox -e $TOX_ENV
 after_success:
-    - if [[ "$TOX_ENV" == "py35" ]]; then tox -e coverage; fi
+    - if [[ "$TOX_ENV" == "py35" ]]; then nosetests ./tests -v --with-coverage --cover-xml --cover-package=iqrf; fi
+    - if [[ "$TOX_ENV" == "py35" ]]; then codecov; fi
