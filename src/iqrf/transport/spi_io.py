@@ -5,7 +5,7 @@ import fcntl
 import time
 import sys
 
-from periphery import spi
+from periphery import gpio, spi
 
 from .spi_codec import (
     DataSendRequest, DataSendResponse,
@@ -34,6 +34,8 @@ class RawSpiIo:
 
     def __init__(self, port):
         try:
+            self._ce0_pin = gpio.GPIO(8, "low")
+            self._pwr_pin = gpio.GPIO(23, "high")
             self._spi = spi.SPI(port, 0, 250000, bit_order="msb", bits_per_word=8, extra_flags=0)
         except IOError as error:
             raise SpiError(error)
@@ -112,6 +114,8 @@ class RawSpiIo:
     def close(self):
         try:
             self._spi.close()
+            self._pwr_pin.close()
+            self._ce0_pin.close()
         except IOError as error:
             raise SpiError(error)
 
