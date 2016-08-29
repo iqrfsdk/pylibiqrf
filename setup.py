@@ -32,6 +32,7 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
     install_requires=[
-        "pyserial >= 3.1.1"
+        "pyserial >= 3.1.1",
+        "python-periphery >= 1.0.0"
     ]
 )

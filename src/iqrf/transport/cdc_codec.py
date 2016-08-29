@@ -14,7 +14,8 @@ This is a concrete implementation of IQRF CDC serialization.
 import enum
 import re
 
-from ..util import codec
+from ..util.codec import CodecError, Encoder, Decoder, Request, Reaction, Response
+from ..util.common import CommonEqualityMixin
 from ..util.log import logger
 
 __all__ = [
@@ -44,17 +45,17 @@ __all__ = [
     "decode_cdc_message"
 ]
 
-class CdcCodecError(codec.CodecError):
+class CdcCodecError(CodecError):
     """An error indicating general CDC codec exception."""
 
     pass
 
-class CdcEncodeError(codec.EncodeError):
+class CdcEncodeError(CdcCodecError):
     """An error thrown when exception raises during CDC message encoding."""
 
     pass
 
-class CdcDecodeError(codec.DecodeError):
+class CdcDecodeError(CdcCodecError):
     """An error thrown when exception raises during CDC message decoding."""
 
     pass
@@ -66,26 +67,16 @@ class CdcStatus(enum.Enum):
     BUSY = 1,
     ERROR = 2
 
-class CdcRequest(codec.Request):
+class CdcRequest(Request, CommonEqualityMixin):
     """Abstract base for all CDC request messages."""
 
-    def __eq__(self, other):
-        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+    pass
 
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
-class CdcResponse(codec.Response):
+class CdcResponse(Response, CommonEqualityMixin):
     """Abstract base for all CDC response messages."""
 
     def __init__(self, status):
         self._status = status
-
-    def __eq__(self, other):
-        return  isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
 
     @property
     def status(self):
@@ -98,14 +89,10 @@ class CdcResponse(codec.Response):
 
         return self._status
 
-class CdcReaction(codec.Reaction):
+class CdcReaction(Reaction, CommonEqualityMixin):
     """Abstract base for all CDC reaction messages."""
 
-    def __eq__(self, other):
-        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
+    pass
 
 REQUESTS = {}
 RESPONSES = {}
@@ -194,7 +181,15 @@ class CdcToken:
     BUSY = b"BUSY"
     ERROR = b"ERR"
 
-class CdcEncoder(codec.Encoder):
+class CdcEncoder(Encoder):
+
+    def tokenize(self):
+        """Turns the object into smaller pieces called tokens which can be
+        serialized to bytes. This method is called directly from the
+        :func:`Encoder.encode` method and is meant to guarantee higher
+        modularity."""
+
+        raise NotImplementedError
 
     def encode(self):
         parameter, value = self.tokenize()
@@ -227,7 +222,7 @@ class CdcEncoder(codec.Encoder):
 
         return encoded
 
-class CdcDecoder(codec.Decoder):
+class CdcDecoder(Decoder):
     pass
 
 class NoneEncoder(CdcEncoder):
@@ -263,7 +258,7 @@ class StatusDecoder(CdcDecoder):
     @classmethod
     def decode(cls, parameter, value):
         if parameter is not None or value is None:
-            raise codec.CdcMessageDecodeError
+            raise CdcDecodeError
 
         if value == CdcToken.OK:
             status = CdcStatus.OK
