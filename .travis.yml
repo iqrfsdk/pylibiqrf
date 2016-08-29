@@ -1,14 +1,22 @@
 language: python
 
-python:
-    - 3.5
+matrix:
+    include:
+        - python: 3.5
+          env: TOX_ENV=docs
+        - python: 3.5
+          env: TOX_ENV=py35
+        - python: 3.5
+          env: TOX_ENV=lint
+    allow_failures:
+        - python: 3.4
+          env: TOX_ENV=py34
 
 install:
-    - pip install pylint codecov nose
+    - pip install tox
     - python setup.py install
 
 script:
-    - python lint.py
-    - nosetests tests -v  --with-coverage --cover-xml --cover-package=iqrf
+    - tox -e $TOX_ENV
 after_success:
-    - codecov
+    - if [[ "$TOX_ENV" == "py35" ]]; then tox -e coverage; fi
