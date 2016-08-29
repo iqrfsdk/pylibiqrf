@@ -17,7 +17,7 @@ import time
 
 import serial
 
-from .cdc_codec import CdcCodecError, CdcToken, CdcRequest, CdcResponse, CdcReaction, decode_cdc_message
+from .cdc_codec import CdcToken, CdcRequest, CdcResponse, CdcReaction, decode_cdc_message
 from ..util.io import IoError, to_iotime, wait
 
 __all__ = [
@@ -76,7 +76,7 @@ class BufferedCdcIo(RawCdcIo):
 
     def send(self, message, timeout=None):
         if not isinstance(message, CdcRequest):
-            raise IoError
+            raise TypeError("Invalid message type!")
 
         timeout = to_iotime(timeout)
 

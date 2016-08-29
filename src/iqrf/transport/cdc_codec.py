@@ -15,6 +15,7 @@ import enum
 import re
 
 from ..util.codec import CodecError, Encoder, Decoder, Request, Reaction, Response
+from ..util.common import CommonEqualityMixin
 from ..util.log import logger
 
 __all__ = [
@@ -66,26 +67,16 @@ class CdcStatus(enum.Enum):
     BUSY = 1,
     ERROR = 2
 
-class CdcRequest(Request):
+class CdcRequest(Request, CommonEqualityMixin):
     """Abstract base for all CDC request messages."""
 
-    def __eq__(self, other):
-        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+    pass
 
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
-class CdcResponse(Response):
+class CdcResponse(Response, CommonEqualityMixin):
     """Abstract base for all CDC response messages."""
 
     def __init__(self, status):
         self._status = status
-
-    def __eq__(self, other):
-        return  isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
 
     @property
     def status(self):
@@ -98,14 +89,10 @@ class CdcResponse(Response):
 
         return self._status
 
-class CdcReaction(Reaction):
+class CdcReaction(Reaction, CommonEqualityMixin):
     """Abstract base for all CDC reaction messages."""
 
-    def __eq__(self, other):
-        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
+    pass
 
 REQUESTS = {}
 RESPONSES = {}
