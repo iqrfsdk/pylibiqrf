@@ -12,7 +12,6 @@ An implementation of communication channel with IQRF USB CDC devices.
 """
 
 import collections
-import sys
 import time
 
 import serial
@@ -25,7 +24,8 @@ __all__ = [
     "open"
 ]
 
-class RawCdcIo:
+
+class RawCdcIo(object):
 
     def __init__(self, port):
         self._serial = serial.Serial(port=port, baudrate=9600, timeout=None)
@@ -48,6 +48,7 @@ class RawCdcIo:
 
     def close(self):
         self._serial.close()
+
 
 class BufferedCdcIo(RawCdcIo):
 
@@ -107,6 +108,7 @@ class BufferedCdcIo(RawCdcIo):
             raise IoError
 
         return message
+
 
 def open(port):
     return BufferedCdcIo(port)

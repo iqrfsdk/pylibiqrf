@@ -18,12 +18,14 @@ __all__ = [
     "Message", "Request", "Response", "Reaction"
 ]
 
+
 class CodecError(Exception):
     """An error indicating general codec exception."""
 
     pass
 
-class Encoder:
+
+class Encoder(object):
     """A mixin that turns regular classes into encodable messages."""
 
     def encode(self):
@@ -31,7 +33,8 @@ class Encoder:
 
         raise NotImplementedError
 
-class Decoder:
+
+class Decoder(object):
     """A mixin that gives regular classes the ability to be deserialized from
     bytes. Note that this mixin doesn't provide a recognition algorithm that
     would match a byte message to the corresponding class."""
@@ -42,7 +45,8 @@ class Decoder:
 
         raise NotImplementedError
 
-class Message:
+
+class Message(object):
     """Abstract message that is capable of serialization."""
 
     def encode(self):
@@ -55,10 +59,11 @@ class Message:
     @classmethod
     def decode(cls, **kwargs):
         """Decodes the message from the given tokens. A common practice is to
-        add the desired sublcass of :class:`Decoder` mixin to your message class
-        declaration to support this functionality."""
+        add the desired sublcass of :class:`Decoder` mixin to your message
+        class declaration to support this functionality."""
 
         raise NotImplementedError
+
 
 class Request(Message):
     """A message that is expected to be responded to with a an instance of the
@@ -66,11 +71,13 @@ class Request(Message):
 
     pass
 
+
 class Response(Message):
     """A message that is sent as a response to a received instance of the
     :class:`Request` class."""
 
     pass
+
 
 class Reaction(Message):
     """A message that can be sent at any time without any kind of foregoing

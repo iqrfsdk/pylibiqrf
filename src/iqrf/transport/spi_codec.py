@@ -1,8 +1,7 @@
 import enum
 
-from ..util.codec import CodecError, Encoder, Decoder, Request, Reaction, Response
+from ..util.codec import (CodecError, Request, Reaction, Response)
 from ..util.common import CommonEqualityMixin
-from ..util.log import logger
 
 __all__ = [
     "SpiCodecError", "SpiEncodeError", "SpiDecodeError",
@@ -16,14 +15,18 @@ __all__ = [
     "DataReceivedReaction"
 ]
 
+
 class SpiCodecError(CodecError):
     pass
+
 
 class SpiEncodeError(SpiCodecError):
     pass
 
+
 class SpiDecodeError(SpiCodecError):
     pass
+
 
 class SpiStatus(enum.Enum):
 
@@ -31,16 +34,20 @@ class SpiStatus(enum.Enum):
     BUSY = 1,
     INACTIVE = 2
 
+
 class SpiRequest(Request, CommonEqualityMixin):
     pass
+
 
 class SpiResponse(Response, CommonEqualityMixin):
     pass
 
+
 class SpiReaction(Reaction, CommonEqualityMixin):
     pass
 
-class SpiToken:
+
+class SpiToken(object):
 
     COMMAND_CHECK = 0x00
     COMMAND_READ_WRITE = 0xf0
@@ -58,6 +65,7 @@ class SpiToken:
     DATA_READY_MIN = 0x40
     DATA_READY_MAX = 0x7f
 
+
 def calculate_crc(data, offset, length):
     crc = 0x5f
     for i in range(offset, length):
@@ -65,11 +73,14 @@ def calculate_crc(data, offset, length):
 
     return crc
 
+
 def encode_command_type(direction, length):
     return (direction << 0x07 & 0x80) | length
 
+
 def decode_command_type(byte):
     return (byte & 0x80) >> 0x07, byte & 0x7f
+
 
 def generate_clock_data(length):
     return [0x00 for i in range(length)]
@@ -118,6 +129,7 @@ def generate_clock_data(length):
 #
 #         raise SpiDecodeError
 
+
 class TrInfoRequest(SpiRequest):
 
     def encode(self):
@@ -129,6 +141,7 @@ class TrInfoRequest(SpiRequest):
         data.append(SpiToken.COMMAND_CHECK)
 
         return bytes(data)
+
 
 class TrInfoResponse(SpiResponse):
 
@@ -152,6 +165,7 @@ class TrInfoResponse(SpiResponse):
 
         return cls(data)
 
+
 class DataSendRequest(SpiRequest):
 
     def __init__(self, data):
@@ -167,6 +181,7 @@ class DataSendRequest(SpiRequest):
 
         return bytes(data)
 
+
 class DataSendResponse(SpiResponse):
 
     @classmethod
@@ -180,6 +195,7 @@ class DataSendResponse(SpiResponse):
             raise SpiDecodeError
 
         return cls()
+
 
 class _DataReceiveRequest(SpiRequest):
 
@@ -195,6 +211,7 @@ class _DataReceiveRequest(SpiRequest):
         data.append(SpiToken.COMMAND_CHECK)
 
         return bytes(data)
+
 
 class _DataReceiveResponse(SpiRequest):
 
@@ -212,6 +229,7 @@ class _DataReceiveResponse(SpiRequest):
             raise SpiDecodeError
 
         return cls(bytes(data[2:-2]))
+
 
 class DataReceivedReaction(SpiReaction):
 

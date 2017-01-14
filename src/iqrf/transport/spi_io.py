@@ -2,15 +2,13 @@ import array
 import collections
 import ctypes
 import fcntl
-import time
-import sys
 
 from periphery import gpio, spi
 
 from .spi_codec import (
     DataSendRequest, DataSendResponse,
     SpiCodecError,
-    SpiRequest, SpiResponse, SpiReaction,
+    SpiRequest,
     SpiToken,
     TrInfoRequest, TrInfoResponse,
     _DataReceiveRequest, _DataReceiveResponse,
@@ -27,10 +25,12 @@ __all__ = [
 
 spi.SPI._SPI_IOC_MESSAGE_2 = 0x40406b00
 
+
 class SpiError(IoError):
     pass
 
-class RawSpiIo:
+
+class RawSpiIo(object):
 
     def __init__(self, port):
         try:
@@ -47,7 +47,8 @@ class RawSpiIo:
         self.close()
 
     def transfer(self, data):
-        if not isinstance(data, bytes) and not isinstance(data, bytearray) and not isinstance(data, list):
+        if not isinstance(data, bytes) and \
+            not isinstance(data, bytearray) and not isinstance(data, list):
             raise TypeError("Invalid data type, should be bytes, bytearray, or list.")
 
         try:
@@ -119,6 +120,7 @@ class RawSpiIo:
         except IOError as error:
             raise SpiError(error)
 
+
 class BufferedSpiIo(RawSpiIo):
 
     def __init__(self, port):
@@ -170,6 +172,7 @@ class BufferedSpiIo(RawSpiIo):
         transfer = self.transfer(_DataReceiveRequest(readable).encode())
         response = _DataReceiveResponse.decode(transfer)
         return DataReceivedReaction(response.data)
+
 
 def open(port):
     return BufferedSpiIo(port)
