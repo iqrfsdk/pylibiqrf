@@ -15,7 +15,8 @@ SIMPLE_MESSAGES = {
 
 VALUE_MESSAGES = {
     b"<R:OK\r": cdc.ResetResponse(cdc.CdcStatus.OK),
-    b"<I:GW-USB-03#02.01#03010000\r": cdc.InfoResponse("GW-USB-03", "02.01", "03010000"),
+    b"<I:GW-USB-03#02.01#03010000\r": cdc.InfoResponse("GW-USB-03", "02.01",
+                                                       "03010000"),
     b"<B:OK\r": cdc.IndicationResponse(cdc.CdcStatus.OK),
     b"<DS:OK\r": cdc.DataSendResponse(cdc.CdcStatus.OK),
     b"<DS:BUSY\r": cdc.DataSendResponse(cdc.CdcStatus.BUSY),

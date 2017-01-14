@@ -1,6 +1,6 @@
 import enum
 
-from ..util.codec import (CodecError, Request, Reaction, Response)
+from ..util.codec import CodecError, Request, Reaction, Response
 from ..util.common import CommonEqualityMixin
 
 __all__ = [
@@ -124,7 +124,8 @@ def generate_clock_data(length):
 #         if status_code == SpiToken.STATUS_HW_ERROR:
 #             return cls(SpiStatus.INACTIVE, status_code)
 #
-#         if status_code in range(SpiToken.DATA_READY_MIN, SpiToken.DATA_READY_MAX):
+#         if status_code in range(SpiToken.DATA_READY_MIN,
+#                                 SpiToken.DATA_READY_MAX):
 #             return cls(SpiStatus.BUSY, status_code)
 #
 #         raise SpiDecodeError
@@ -191,7 +192,8 @@ class DataSendResponse(SpiResponse):
         if data[-1] != SpiToken.STATUS_CRC_OK:
             raise SpiDecodeError
 
-        if calculate_crc(data, 2, len(data) - 2) ^ encode_command_type(1, len(data) - 4) != data[-2]:
+        if calculate_crc(data, 2, len(data) - 2) ^ \
+           encode_command_type(1, len(data) - 4) != data[-2]:
             raise SpiDecodeError
 
         return cls()
@@ -225,7 +227,8 @@ class _DataReceiveResponse(SpiRequest):
         if data[-1] != SpiToken.STATUS_CRC_OK:
             raise SpiDecodeError
 
-        if calculate_crc(data, 2, len(data) - 2) ^ encode_command_type(0, len(data) - 4) != data[-2]:
+        if calculate_crc(data, 2, len(data) - 2) ^ \
+           encode_command_type(0, len(data) - 4) != data[-2]:
             raise SpiDecodeError
 
         return cls(bytes(data[2:-2]))

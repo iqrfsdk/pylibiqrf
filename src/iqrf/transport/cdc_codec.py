@@ -16,7 +16,8 @@ import enum
 
 from ..util.codec import (
     CodecError, Encoder, Decoder,
-    Request, Reaction, Response)
+    Request, Reaction, Response
+)
 from ..util.common import CommonEqualityMixin
 from ..util.log import logger
 
@@ -234,9 +235,12 @@ class CdcEncoder(Encoder):
             encoded = b"".join([direction, identifier, CdcToken.TERMINATOR])
         else:
             if parameter is None:
-                encoded = b"".join([direction, identifier, CdcToken.SEPARATOR, value, CdcToken.TERMINATOR])
+                encoded = b"".join([direction, identifier, CdcToken.SEPARATOR,
+                                    value, CdcToken.TERMINATOR])
             else:
-                encoded = b"".join([direction, identifier, parameter, CdcToken.SEPARATOR, value, CdcToken.TERMINATOR])
+                encoded = b"".join([direction, identifier, parameter,
+                                    CdcToken.SEPARATOR, value,
+                                    CdcToken.TERMINATOR])
 
         logger.debug("Encoded %s to: '%s'.", self, encoded)
 
@@ -300,7 +304,8 @@ class StatusDecoder(CdcDecoder):
 class InfoEncoder(CdcEncoder):
 
     def tokenize(self):
-        return None, self.type.encode() + b"#" + self.version.encode() + b"#" + self.id.encode()
+        return (None, self.type.encode() + b"#" + self.version.encode()
+                + b"#" + self.id.encode())
 
 
 class InfoDecoder(CdcDecoder):

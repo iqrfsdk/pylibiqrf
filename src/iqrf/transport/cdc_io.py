@@ -16,7 +16,10 @@ import time
 
 import serial
 
-from .cdc_codec import CdcToken, CdcRequest, CdcResponse, CdcReaction, decode_cdc_message
+from .cdc_codec import (
+    CdcToken, CdcRequest, CdcResponse,
+    CdcReaction, decode_cdc_message
+    )
 from ..util.io import IoError, to_iotime, wait
 
 __all__ = [
