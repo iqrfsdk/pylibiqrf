@@ -15,7 +15,8 @@ SIMPLE_MESSAGES = {
 
 VALUE_MESSAGES = {
     b"<R:OK\r": cdc.ResetResponse(cdc.CdcStatus.OK),
-    b"<I:GW-USB-03#02.01#03010000\r": cdc.InfoResponse("GW-USB-03", "02.01", "03010000"),
+    b"<I:GW-USB-03#02.01#03010000\r": cdc.InfoResponse("GW-USB-03", "02.01",
+                                                       "03010000"),
     b"<B:OK\r": cdc.IndicationResponse(cdc.CdcStatus.OK),
     b"<DS:OK\r": cdc.DataSendResponse(cdc.CdcStatus.OK),
     b"<DS:BUSY\r": cdc.DataSendResponse(cdc.CdcStatus.BUSY),
@@ -27,6 +28,7 @@ PARAMETER_MESSAGES = {
     b">DS\x06:Hello.\r": cdc.DataSendRequest(b"Hello."),
     b"<DR\x03:Hi!\r": cdc.DataReceivedReaction(b"Hi!")
 }
+
 
 class EncoderTests(unittest.TestCase):
 
@@ -42,6 +44,7 @@ class EncoderTests(unittest.TestCase):
         for encoded, decoded in PARAMETER_MESSAGES.items():
             self.assertEqual(encoded, decoded.encode())
 
+
 class DecoderTests(unittest.TestCase):
 
     def test_simple_message_decoding(self):
@@ -55,6 +58,7 @@ class DecoderTests(unittest.TestCase):
     def test_parameter_message_decoding(self):
         for encoded, decoded in PARAMETER_MESSAGES.items():
             self.assertEqual(cdc.decode_cdc_message(encoded), decoded)
+
 
 class EncoderDecoderTests(unittest.TestCase):
 

@@ -1,17 +1,21 @@
 import sys
 import time
 
+
 class IoError(IOError):
     pass
 
+
 class IoTimeoutError(IoError):
     pass
+
 
 def to_iotime(time):
     if time is None:
         time = sys.maxsize
 
     return time
+
 
 def wait(expression, condition, timeout=None):
     timeout = to_iotime(timeout)

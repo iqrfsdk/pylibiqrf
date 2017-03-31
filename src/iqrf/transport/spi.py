@@ -1,7 +1,8 @@
 import sys
 
 if sys.platform != "linux":
-    raise NotImplementedError("Unfortunately, this module has not been implemented on your platform yet.")
+    raise NotImplementedError("Unfortunately, this module has not been "
+                              "implemented on your platform yet.")
 
 from . import spi_codec
 from . import spi_io

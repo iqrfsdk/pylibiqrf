@@ -2,15 +2,13 @@ import array
 import collections
 import ctypes
 import fcntl
-import time
-import sys
 
 from periphery import gpio, spi
 
 from .spi_codec import (
     DataSendRequest, DataSendResponse,
     SpiCodecError,
-    SpiRequest, SpiResponse, SpiReaction,
+    SpiRequest,
     SpiToken,
     TrInfoRequest, TrInfoResponse,
     _DataReceiveRequest, _DataReceiveResponse,
@@ -27,16 +25,19 @@ __all__ = [
 
 spi.SPI._SPI_IOC_MESSAGE_2 = 0x40406b00
 
+
 class SpiError(IoError):
     pass
 
-class RawSpiIo:
+
+class RawSpiIo(object):
 
     def __init__(self, port):
         try:
             self._ce0_pin = gpio.GPIO(8, "low")
             self._pwr_pin = gpio.GPIO(23, "high")
-            self._spi = spi.SPI(port, 0, 250000, bit_order="msb", bits_per_word=8, extra_flags=0)
+            self._spi = spi.SPI(port, 0, 250000, bit_order="msb",
+                                bits_per_word=8, extra_flags=0)
         except IOError as error:
             raise SpiError(error)
 
@@ -47,8 +48,11 @@ class RawSpiIo:
         self.close()
 
     def transfer(self, data):
-        if not isinstance(data, bytes) and not isinstance(data, bytearray) and not isinstance(data, list):
-            raise TypeError("Invalid data type, should be bytes, bytearray, or list.")
+        if (not isinstance(data, bytes) and
+                not isinstance(data, bytearray) and
+                not isinstance(data, list)):
+            raise TypeError("Invalid data type, should be bytes, "
+                            "bytearray, or list.")
 
         try:
             buf = array.array('B', data)
@@ -87,9 +91,11 @@ class RawSpiIo:
             spi_xfer[0] = xfer_init
             spi_xfer[1] = xfer_data
 
-            fcntl.ioctl(self._spi._fd, spi.SPI._SPI_IOC_MESSAGE_2, ctypes.addressof(spi_xfer))
+            fcntl.ioctl(self._spi._fd, spi.SPI._SPI_IOC_MESSAGE_2,
+                        ctypes.addressof(spi_xfer))
         except OSError as error:
-            raise SpiError(error.errno, "SPI initial transfer: " + error.strerror)
+            raise SpiError(error.errno, "SPI initial transfer: "
+                           + error.strerror)
 
         for i in range(1, buf_len):
             xfer_data.tx_buf = buf_addr + i
@@ -100,7 +106,8 @@ class RawSpiIo:
                 xfer_data.cs_change = 0
 
             try:
-                fcntl.ioctl(self._spi._fd, spi.SPI._SPI_IOC_MESSAGE_1, xfer_data)
+                fcntl.ioctl(self._spi._fd, spi.SPI._SPI_IOC_MESSAGE_1,
+                            xfer_data)
             except OSError as error:
                 raise SpiError(error.errno, "SPI transfer: " + error.strerror)
 
@@ -119,6 +126,7 @@ class RawSpiIo:
         except IOError as error:
             raise SpiError(error)
 
+
 class BufferedSpiIo(RawSpiIo):
 
     def __init__(self, port):
@@ -127,7 +135,10 @@ class BufferedSpiIo(RawSpiIo):
         self._reactions = collections.deque()
 
     def _wait_until_readable(self, timeout=None):
-        _, result = wait(lambda: self.transfer([SpiToken.COMMAND_CHECK]), lambda x: x[0] in range(SpiToken.DATA_READY_MIN, SpiToken.DATA_READY_MAX), timeout=timeout)
+        _, result = wait(lambda: self.transfer([SpiToken.COMMAND_CHECK]),
+                         lambda x: x[0] in range(SpiToken.DATA_READY_MIN,
+                                                 SpiToken.DATA_READY_MAX),
+                         timeout=timeout)
         readable = result[0]
         return 64 if readable == SpiToken.DATA_READY_MIN else readable - SpiToken.DATA_READY_MIN
 
@@ -170,6 +181,7 @@ class BufferedSpiIo(RawSpiIo):
         transfer = self.transfer(_DataReceiveRequest(readable).encode())
         response = _DataReceiveResponse.decode(transfer)
         return DataReceivedReaction(response.data)
+
 
 def open(port):
     return BufferedSpiIo(port)
