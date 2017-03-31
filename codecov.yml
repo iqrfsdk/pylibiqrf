@@ -3,7 +3,7 @@ coverage:
   round: down
   range: 50...100
   ignore:
+    - "docs/*"
+    - "examples/*"
     - "tests/*"
-    - "test.py"
-    - "lint.py"
     - "doc.py"
