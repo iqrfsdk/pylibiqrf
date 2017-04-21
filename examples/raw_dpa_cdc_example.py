@@ -6,6 +6,7 @@ from iqrf.transport import cdc
 ARGS = argparse.ArgumentParser(description="Raw IQRF DPA CDC communication example.")
 ARGS.add_argument("-p", "--port", action="store", dest="port", required=True, type=str, help="The port name to connect to.")
 
+
 def main():
     args = ARGS.parse_args()
     port = args.port

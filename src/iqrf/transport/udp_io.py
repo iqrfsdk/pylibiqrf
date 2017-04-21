@@ -7,6 +7,7 @@ __all__ = [
     "open"
 ]
 
+
 class RawUdpIo:
 
     def __init__(self, host, port):
@@ -32,6 +33,7 @@ class RawUdpIo:
 
     def close(self):
         self.socket.close()
+
 
 def open(host, port):
     return RawUdpIo(host, port)

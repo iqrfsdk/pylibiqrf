@@ -28,6 +28,7 @@ PARAMETER_MESSAGES = {
     b"<DR\x03:Hi!\r": cdc.DataReceivedReaction(b"Hi!")
 }
 
+
 class EncoderTests(unittest.TestCase):
 
     def test_simple_message_encoding(self):
@@ -42,6 +43,7 @@ class EncoderTests(unittest.TestCase):
         for encoded, decoded in PARAMETER_MESSAGES.items():
             self.assertEqual(encoded, decoded.encode())
 
+
 class DecoderTests(unittest.TestCase):
 
     def test_simple_message_decoding(self):
@@ -55,6 +57,7 @@ class DecoderTests(unittest.TestCase):
     def test_parameter_message_decoding(self):
         for encoded, decoded in PARAMETER_MESSAGES.items():
             self.assertEqual(cdc.decode_cdc_message(encoded), decoded)
+
 
 class EncoderDecoderTests(unittest.TestCase):
 

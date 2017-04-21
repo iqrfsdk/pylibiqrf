@@ -5,6 +5,7 @@ from iqrf.transport import spi
 ARGS = argparse.ArgumentParser(description="IQRF SPI communication example.")
 ARGS.add_argument("-p", "--port", action="store", dest="port", required=True, type=str, help="The port name to connect to.")
 
+
 def main():
     args = ARGS.parse_args()
     port = args.port

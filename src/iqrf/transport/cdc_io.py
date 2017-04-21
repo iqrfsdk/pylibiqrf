@@ -25,6 +25,7 @@ __all__ = [
     "open"
 ]
 
+
 class RawCdcIo:
 
     def __init__(self, port):
@@ -48,6 +49,7 @@ class RawCdcIo:
 
     def close(self):
         self._serial.close()
+
 
 class BufferedCdcIo(RawCdcIo):
 
@@ -107,6 +109,7 @@ class BufferedCdcIo(RawCdcIo):
             raise IoError
 
         return message
+
 
 def open(port):
     return BufferedCdcIo(port)

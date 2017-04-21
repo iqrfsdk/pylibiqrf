@@ -24,6 +24,7 @@ INDEX_FILE = os.path.realpath("./docs/build/html/index.html")
 ARGS = argparse.ArgumentParser(description="Documentation utility.")
 ARGS.add_argument("action", action="store", choices=["generate", "view"], type=str, help="The action to be performed.")
 
+
 def execute(command):
     args = command.split()
     process = subprocess.Popen(args, stdout=subprocess.PIPE)
@@ -31,6 +32,7 @@ def execute(command):
         sys.stdout.write(line.decode())
     process.stdout.close()
     return process.wait()
+
 
 def main():
     args = ARGS.parse_args()

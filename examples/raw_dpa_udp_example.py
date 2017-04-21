@@ -7,6 +7,7 @@ ARGS = argparse.ArgumentParser(description="Raw IQRF DPA UDP communication examp
 ARGS.add_argument("-H", "--host", action="store", dest="host", required=True, type=str, help="The hostname of the remote UDP gateway.")
 ARGS.add_argument("-p", "--port", action="store", dest="port", required=True, type=int, help="The UDP port to communicate over.")
 
+
 def main():
     args = ARGS.parse_args()
     host = args.host

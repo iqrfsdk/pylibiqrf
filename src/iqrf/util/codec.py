@@ -18,10 +18,12 @@ __all__ = [
     "Message", "Request", "Response", "Reaction"
 ]
 
+
 class CodecError(Exception):
     """An error indicating general codec exception."""
 
     pass
+
 
 class Encoder:
     """A mixin that turns regular classes into encodable messages."""
@@ -30,6 +32,7 @@ class Encoder:
         """Encodes the message to bytes."""
 
         raise NotImplementedError
+
 
 class Decoder:
     """A mixin that gives regular classes the ability to be deserialized from
@@ -41,6 +44,7 @@ class Decoder:
         """Decodes the message from the given tokens."""
 
         raise NotImplementedError
+
 
 class Message:
     """Abstract message that is capable of serialization."""
@@ -60,17 +64,20 @@ class Message:
 
         raise NotImplementedError
 
+
 class Request(Message):
     """A message that is expected to be responded to with a an instance of the
     :class:`Response` class."""
 
     pass
 
+
 class Response(Message):
     """A message that is sent as a response to a received instance of the
     :class:`Request` class."""
 
     pass
+
 
 class Reaction(Message):
     """A message that can be sent at any time without any kind of foregoing

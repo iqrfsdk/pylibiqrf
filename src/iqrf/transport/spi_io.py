@@ -27,8 +27,10 @@ __all__ = [
 
 spi.SPI._SPI_IOC_MESSAGE_2 = 0x40406b00
 
+
 class SpiError(IoError):
     pass
+
 
 class RawSpiIo:
 
@@ -119,6 +121,7 @@ class RawSpiIo:
         except IOError as error:
             raise SpiError(error)
 
+
 class BufferedSpiIo(RawSpiIo):
 
     def __init__(self, port):
@@ -170,6 +173,7 @@ class BufferedSpiIo(RawSpiIo):
         transfer = self.transfer(_DataReceiveRequest(readable).encode())
         response = _DataReceiveResponse.decode(transfer)
         return DataReceivedReaction(response.data)
+
 
 def open(port):
     return BufferedSpiIo(port)
