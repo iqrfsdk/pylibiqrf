@@ -67,8 +67,8 @@ class CdcDecodeError(CdcCodecError):
 class CdcStatus(enum.Enum):
     """Represents a status of a CDC response message."""
 
-    OK = 0,
-    BUSY = 1,
+    OK = 0
+    BUSY = 1
     ERROR = 2
 
 

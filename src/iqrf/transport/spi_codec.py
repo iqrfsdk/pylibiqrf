@@ -30,8 +30,8 @@ class SpiDecodeError(SpiCodecError):
 
 class SpiStatus(enum.Enum):
 
-    READY = 0,
-    BUSY = 1,
+    READY = 0
+    BUSY = 1
     INACTIVE = 2
 
 
