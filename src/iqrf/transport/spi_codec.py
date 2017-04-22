@@ -1,8 +1,7 @@
 import enum
 
-from ..util.codec import CodecError, Encoder, Decoder, Request, Reaction, Response
+from ..util.codec import CodecError, Request, Reaction, Response
 from ..util.common import CommonEqualityMixin
-from ..util.log import logger
 
 __all__ = [
     "SpiCodecError", "SpiEncodeError", "SpiDecodeError",

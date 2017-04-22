@@ -12,7 +12,6 @@ An implementation of communication channel with IQRF USB CDC devices.
 """
 
 import collections
-import sys
 import time
 
 import serial

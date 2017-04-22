@@ -2,15 +2,13 @@ import array
 import collections
 import ctypes
 import fcntl
-import time
-import sys
 
 from periphery import gpio, spi
 
 from .spi_codec import (
     DataSendRequest, DataSendResponse,
     SpiCodecError,
-    SpiRequest, SpiResponse, SpiReaction,
+    SpiRequest,
     SpiToken,
     TrInfoRequest, TrInfoResponse,
     _DataReceiveRequest, _DataReceiveResponse,
