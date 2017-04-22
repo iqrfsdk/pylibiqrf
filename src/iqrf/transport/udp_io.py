@@ -1,3 +1,16 @@
+# -*- coding: utf-8 -*-
+
+"""
+IQRF UDP IO
+===========
+
+An implementation of communication channel with IQRF UDP devices.
+
+:copyright: (c) 2016 by Tomáš Rottenberg.
+:license:  Apache 2, see license.txt for more details.
+
+"""
+
 import socket
 
 BUFFER_SIZE = 1024 * 1024

@@ -1,3 +1,16 @@
+# -*- coding: utf-8 -*-
+
+"""
+IQRF SPI IO
+===========
+
+An implementation of communication channel with IQRF SPI devices.
+
+:copyright: (c) 2016 by Tomáš Rottenberg.
+:license:  Apache 2, see license.txt for more details.
+
+"""
+
 import array
 import collections
 import ctypes

@@ -1,3 +1,16 @@
+# -*- coding: utf-8 -*-
+
+"""
+IQRF SPI Codec
+==============
+
+This is a concrete implementation of IQRF SPI serialization.
+
+:copyright: (c) 2016 by Tomáš Rottenberg.
+:license:  Apache 2, see license.txt for more details.
+
+"""
+
 import enum
 
 from ..util.codec import CodecError, Request, Reaction, Response
@@ -17,18 +30,25 @@ __all__ = [
 
 
 class SpiCodecError(CodecError):
+    """An error indicating general SPI codec exception."""
+
     pass
 
 
 class SpiEncodeError(SpiCodecError):
+    """An error thrown when exception raises during SPI message encoding."""
+
     pass
 
 
 class SpiDecodeError(SpiCodecError):
+    """An error thrown when exception raises during SPI message decoding."""
+
     pass
 
 
 class SpiStatus(enum.Enum):
+    """Represents a status of a SPI response message."""
 
     READY = 0
     BUSY = 1
@@ -36,14 +56,20 @@ class SpiStatus(enum.Enum):
 
 
 class SpiRequest(Request, CommonEqualityMixin):
+    """Abstract base for all SPI request messages."""
+
     pass
 
 
 class SpiResponse(Response, CommonEqualityMixin):
+    """Abstract base for all SPI response messages."""
+
     pass
 
 
 class SpiReaction(Reaction, CommonEqualityMixin):
+    """Abstract base for all SPI reaction messages."""
+
     pass
 
 
